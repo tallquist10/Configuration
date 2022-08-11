@@ -1,0 +1,227 @@
+{
+    "java.codeGeneration.generateComments": true,
+    "java.codeGeneration.useBlocks": true,
+    "java.home": "C:\\Program Files\\Java\\jdk-13.0.1",
+    "merge-conflict.autoNavigateNextConflict.enabled": true,
+    "css.fileExtensions": [
+        "css",
+        "scss",
+        "sass"
+    ],
+    "rewrap.wrappingColumn": 100,
+    "editor.minimap.enabled": false,
+    "editor.bracketPairColorization.enabled": true,
+    "files.defaultLanguage": "markdown",
+    "git.autofetch": true,
+    "git.suggestSmartCommit": false,
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "files.insertFinalNewline": true,
+    "[powershell]": {
+        "editor.formatOnSave": false
+    },
+    "[java]": {
+        "breadcrumbs.showArrays": true,
+        "breadcrumbs.showBooleans": true,
+        "breadcrumbs.showClasses": true,
+        "breadcrumbs.showConstants": true,
+        "breadcrumbs.showConstructors": true,
+        "breadcrumbs.showEnumMembers": true,
+        "breadcrumbs.showEnums": true,
+        "breadcrumbs.showFields": true,
+        "breadcrumbs.showFiles": true,
+        "breadcrumbs.showFunctions": true,
+        "breadcrumbs.showInterfaces": true,
+        "breadcrumbs.showMethods": true,
+        "breadcrumbs.showModules": true,
+        "breadcrumbs.showNamespaces": true,
+        "breadcrumbs.showNull": true,
+        "breadcrumbs.showNumbers": true,
+        "breadcrumbs.showObjects": true,
+        "breadcrumbs.showOperators": true,
+        "breadcrumbs.showPackages": true
+    },
+    "[yaml]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "keep",
+        "gitlens.codeLens.scopes": [
+            "document"
+        ],
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        },
+        "yaml.format.enable": false
+    },
+    "python.formatting.provider": "black",
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true,
+        "**/obj": true,
+        "**/.suo": true
+    },
+    "terminal.integrated.tabs.enabled": true,
+    "FSharp.useSdkScripts": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true,
+        "source.fixAll": false,
+    },
+    "editor.fontSize": 17,
+    "editor.fontWeight": "375",
+    "liveServer.settings.port": 3000,
+    "liveServer.settings.CustomBrowser": "chrome",
+    "html.format.indentInnerHtml": true,
+    "editor.fontLigatures": true,
+    "workbench.startupEditor": "none",
+    "liveServer.settings.donotVerifyTags": true,
+    "window.title": "${dirty}${activeEditorLong}${separator}${rootName}${separator}${appName}",
+    "liveSassCompile.settings.formats": [
+        {
+            "format": "expanded",
+            "extensionName": ".css",
+            "savePath": "/css"
+        }
+    ],
+    "workbench.sideBar.location": "right",
+    "editor.fontFamily": "'Cascadia Code', Consolas, 'Rocket Sans', 'Lucida Console', Rockwell, Arial, 'Courier New', monospace, Stencil, wingdings",
+    "FSharp.dotNetRoot": "C:\\Program Files\\dotnet",
+    "FSharp.analyzersPath": [
+        "packages/Analyzers",
+        "analyzers"
+    ],
+    //"FSharp.fsiFilePath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\FSharp",
+    "FSharp.lineLens.prefix": "  //  FunctionType = ",
+    "FSharp.smartIndent": true,
+    "workbench.settings.editor": "json",
+    "mssql.connections": [
+        {
+            "server": "asc-qtradeDEVdbserver",
+            "authenticationType": "Integrated",
+            "profileName": "QTrade Dev Server",
+            "savePassword": true,
+            "password": ""
+        },
+        {
+            "server": "asc-qtradeTESTdbserver",
+            "authenticationType": "Integrated",
+            "profileName": "QTrade Test Server",
+            "savePassword": true,
+            "password": ""
+        },
+        {
+            "server": "asc-qtradeBETAdbserver",
+            "authenticationType": "Integrated",
+            "profileName": "QTrade Beta Server",
+            "savePassword": true,
+            "password": ""
+        },
+        {
+            "server": "asc-qtradedbserver",
+            "authenticationType": "Integrated",
+            "profileName": "QTrade Prod Server",
+            "savePassword": true,
+            "password": ""
+        },
+        {
+            "server": "localhost",
+            "port": 1433,
+            "authenticationType": "SqlLogin",
+            "profileName": "QTrade Local DB (Docker)",
+            "savePassword": true,
+            "user": "SA",
+            "password": ""
+        },
+        {
+            "server": "asc-qtradeBETAdbserver",
+            "authenticationType": "Integrated",
+            "profileName": "QTrade Beta BestEx",
+            "savePassword": true,
+            "password": "",
+            "database": "BestEx"
+        },
+        {
+            "server": "asc-qtradedbserver",
+            "authenticationType": "Integrated",
+            "profileName": "QTrade Prod BestEx",
+            "database": "BestEx",
+            "password": ""
+        },
+        {
+            "server": "asc-qtradeTESTdbserver",
+            "authenticationType": "Integrated",
+            "profileName": "QTrade Test BestEx",
+            "savePassword": true,
+            "password": "",
+            "database": "BestEx"
+        },
+        {
+            "server": "asc-qtradeDEVdbserver",
+            "authenticationType": "Integrated",
+            "profileName": "QTrade Dev BestEx",
+            "savePassword": true,
+            "password": "",
+            "database": "BestEx"
+        },
+        {
+            "server": "localhost\\QTradeLocalDB",
+            "authenticationType": "Integrated",
+            "profileName": "Local QTrade",
+            "savePassword": true,
+            "password": ""
+        },
+        {
+            "server": "127.0.0.1,9999",
+            "authenticationType": "SqlLogin",
+            "profileName": "RDS",
+            "savePassword": false,
+            "user": "sasql",
+            "password": ""
+        },
+        {
+            "server": "localhost,1433",
+            "database": "master",
+            "authenticationType": "SqlLogin",
+            "user": "sa",
+            "password": "",
+            "emptyPasswordInput": false,
+            "savePassword": false,
+            "profileName": "mssql-container",
+            "connectTimeout": 15,
+            "encrypt": false,
+            "applicationName": "vscode-mssql"
+        },
+        {
+            "server": "localhost\\QTradeLocalDB",
+            "database": "LFM",
+            "authenticationType": "Integrated",
+            "profileName": "LFM Local",
+            "password": ""
+        }
+    ],
+    "mssql.format.keywordCasing": "uppercase",
+    "[sql]": {
+        "breadcrumbs.showStructs": false,
+        "editor.autoSurround": "languageDefined",
+        "editor.formatOnSave": false,
+        "editor.formatOnPaste": false,
+        "editor.formatOnType": false
+    },
+    "files.autoSave": "onWindowChange",
+    "editor.matchBrackets": "always",
+    "editor.formatOnSave": true,
+    "workbench.iconTheme": "vscode-great-icons",
+    "workbench.colorTheme": "Tinacious Design",
+    "powershell.powerShellDefaultVersion": "PowerShell (x64)",
+    "gitlens.currentLine.format": "${author, }${date}${' via 'pullRequest}${ • message|50?}",
+    "gitlens.statusBar.format": "${author}, ${date}${' via 'pullRequest}",
+    "redhat.telemetry.enabled": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "hediet.vscode-drawio.codeLinkActivated": false,
+    "remote.SSH.remotePlatform": {
+        "LFM-Forwarder-Box": "linux"
+    }
+}

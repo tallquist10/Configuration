@@ -1,0 +1,1264 @@
+{
+    // Place your snippets for sql here. Each snippet is defined under a snippet name and has a prefix, body and 
+    // description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+    // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
+    // same ids are connected.
+    // Example:
+    // "Print to console": {
+    // 	"prefix": "log",
+    // 	"body": [
+    // 		"console.log('$1');",
+    // 		"$2"
+    // 	],
+    // 	"description": "Log output to console"
+    // }
+    "no-lock": {
+        "prefix": [
+            "no-lock",
+            "nolock"
+        ],
+        "description": "Add no-lock",
+        "body": "WITH(NOLOCK)"
+    },
+    "select": {
+        "prefix": "select",
+        "description": "A select query",
+        "body": "SELECT ${1: Columns} FROM ${2: Tables}"
+    },
+    "select-nolock": {
+        "prefix": [
+            "select-nolock",
+            "SELECT-NOLOCK"
+        ],
+        "description": "A select query with no-lock",
+        "body": "SELECT ${1: Columns} FROM ${2: Tables} WITH(NOLOCK)"
+    },
+    "insert": {
+        "prefix": "insert",
+        "description": "An insert query",
+        "body": [
+            "INSERT INTO ${1:Table}",
+            "(",
+            "\t${2:Rows}",
+            ")",
+            "VALUES",
+            "$3"
+        ]
+    },
+    "values": {
+        "prefix": "values",
+        "description": "Values to be inserted in an insert statement",
+        "body": [
+            "(",
+            "\t$1",
+            ")"
+        ]
+    },
+    "delete": {
+        "prefix": "delete",
+        "description": "Delete by criteria",
+        "body": [
+            "DELETE FROM ${1: Tables}",
+            "WHERE ${2: Column} ${3: Operator} ${4: Criteria}"
+        ]
+    },
+    "foreign key": {
+        "prefix": "for_key",
+        "description": "Add a foreign key to a table",
+        "body": "FOREIGN KEY (${1: Column in table}) REFERENCES ${2: Other table}(${3: Other column})"
+    },
+    "add constraint - alter": {
+        "prefix": "alter-cons",
+        "description": "Add a constraint to an existing table",
+        "body": [
+            "ALTER TABLE ${1:Table}",
+            "ADD CONSTRAINT ${2:Name} UNIQUE (${3:Column(s)})"
+        ]
+    },
+    "primary key": {
+        "prefix": "prim_key",
+        "description": "Add a primary key to a table",
+        "body": "PRIMARY KEY (${1: Column in table}) REFERENCES $(2: Other table}($3: Other column})"
+    },
+    "trigger": {
+        "prefix": "trigger",
+        "description": "Create a trigger on a table",
+        "body": [
+            "USE ${1: Database}",
+            "CREATE OR ALTER TRIGGER ${2:[Schema Name]}.${3:[Trigger Name]}",
+            "ON ${4:[TABLE NAME]}",
+            "${5|AFTER, INSTEAD OF|} ${6|INSERT, UPDATE, DELETE|}",
+            "AS",
+            "BEGIN",
+            "\t$7",
+            "END"
+        ]
+    },
+    "stored-procedure": {
+        "prefix": "stored-procedure, stored-proc, sproc",
+        "description": "Create a stored procedure in SQL",
+        "body": [
+            "USE ${1: Database}",
+            "GO",
+            "CREATE PROCEDURE ${2:Procedure Name}",
+            "(",
+            "\t${3:Parameter and Type}",
+            ")",
+            "AS",
+            "BEGIN;",
+            "SET NOCOUNT ON;",
+            "\t$4",
+            "SET NOCOUNT OFF",
+            "END;"
+        ]
+    },
+    "parameter": {
+        "prefix": "parameter, param, par",
+        "description": "Create a parameter",
+        "body": "@${1:name} ${2:type}"
+    },
+    //change script stuff
+    "database-change-script": {
+        "prefix": "change-script",
+        "description": "Create a database change script",
+        "body": [
+            "GO",
+            "SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, QUOTED_IDENTIFIER ON;",
+            "SET NUMERIC_ROUNDABORT OFF;",
+            "        ",
+            "GO",
+            "USE [${1:database}];",
+            "        ",
+            "GO",
+            "DECLARE @DeploymentOrRollback NVARCHAR(11) = '${2|ROLLBACK,DEPLOYMENT|}'",
+            "DECLARE @WorkItemID NVARCHAR(7) = '${3:TFS Work Item}';",
+            "DECLARE @Description NVARCHAR(100) = '${4:Description}'",
+            "DECLARE @InfoString NVARCHAR(200) =",
+            "    @DeploymentOrRollback + ' of ' + @WorkItemID + ' - ' + @Description + ' - '",
+            "        ",
+            "PRINT N'=================================================';",
+            "PRINT @InfoString + 'STARTED with login ' + ORIGINAL_LOGIN() + ' on instance ' + @@SERVERNAME + + ' in database ' + DB_NAME() + ' at ' + CONVERT(nvarchar(27), SYSUTCDATETIME(), 121) + ' UTC.';",
+            "PRINT N'=================================================';",
+            "        ",
+            "BEGIN TRY",
+            "        ",
+            "    BEGIN TRANSACTION",
+            "        ${5:content}",
+            "    COMMIT TRANSACTION",
+            "        ",
+            "    PRINT N'=================================================';",
+            "    PRINT @InfoString + 'COMPLETED at ' + CONVERT(nvarchar(27), SYSUTCDATETIME(), 121) + ' UTC.';",
+            "    PRINT N'=================================================';",
+            "        ",
+            "END TRY",
+            "        ",
+            "BEGIN CATCH",
+            "    IF @@TRANCOUNT > 0",
+            "        ROLLBACK TRANSACTION;",
+            "    SELECT 'It rolled back'",
+            "        ",
+            "    PRINT N'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';",
+            "    PRINT @InfoString + 'FAILED at ' + CONVERT(nvarchar(27), SYSUTCDATETIME(), 121) + ' UTC.';",
+            "    PRINT N'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';",
+            "        ",
+            "    THROW;",
+            "END CATCH;",
+        ]
+    },
+    "create-schema": {
+        "prefix": "create-schema",
+        "description": "Create a database schema",
+        "body": [
+            "DECLARE @SchemaName NVARCHAR(100) = N'${1:schema}';",
+            "RAISERROR(N'Creating schema \"%s\"...', 0, 0, @SchemaName) WITH NOWAIT;",
+            "IF SCHEMA_ID(@SchemaName) IS NULL",
+            "BEGIN;",
+            "DECLARE @CreateSchemaScript NVARCHAR(1000) = N'CREATE SCHEMA ' + @SchemaName + ' AUTHORIZATION dbo;'",
+            "EXEC sp_executesql @CreateSchemaScript",
+            "END;",
+            "ELSE BEGIN;",
+            "RAISERROR(N'  Schema \"%s\" already exists.', 0, 0, @SchemaName) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "drop-schema": {
+        "prefix": "drop-schema",
+        "description": "Drop a database schema",
+        "body": [
+            "DECLARE @SchemaName NVARCHAR(100) = N'$1';",
+            "RAISERROR(N'Dropping schema \"%s\"...', 0, 0, @SchemaName) WITH NOWAIT;",
+            "DECLARE @DropSchemaScript NVARCHAR(1000) = N'DROP SCHEMA IF EXISTS ' + @SchemaName",
+            "EXEC sp_executesql @DropSchemaScript"
+        ]
+    },
+    "create-table": {
+        "prefix": "create-table",
+        "description": "Create a table in the database",
+        "body": [
+            "RAISERROR(N'Creating table [${1:schema}].[${2:table}]...',0,0) WITH NOWAIT;",
+            "IF OBJECT_ID(N'[$1].[$2]', N'U') IS NULL",
+            "BEGIN;",
+            "    CREATE TABLE [$1].[$2] (",
+            "        ${3:columns}",
+            "        CONSTRAINT [PK_$2] PRIMARY KEY CLUSTERED ( [${4:PK column}] )",
+            "    );",
+            "    -- If the expectation is that the table never existed, you can place index creation statements",
+            "    -- with the table creation.",
+            "    CREATE NONCLUSTERED INDEX [IX_$2_${5:index columns}] ON [$1].[$2] ( ${6:index columns});",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  Table [$1].[$2] already exists.',0,0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "create-table-easy": {
+        "prefix": "create-table-easy",
+        "description": "Create a table in the database",
+        "body": [
+            "RAISERROR(N'Creating table [${1:schema}].[${2:table}]...',0,0) WITH NOWAIT;",
+            "IF OBJECT_ID(N'[$1].[$2]', N'U') IS NULL",
+            "BEGIN;",
+            "    ${3:table-definition}",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  Table [$1].[$2] already exists.',0,0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "delete-table": {
+        "prefix": "delete-table",
+        "description": "Delete a table from the database",
+        "body": [
+            "RAISERROR(N'Dropping table [${1:schema}].[${2:table}]...', 0, 0) WITH NOWAIT;",
+            "DROP TABLE IF EXISTS [$1].[$2];"
+        ]
+    },
+    "add-one-column": {
+        "prefix": "add-one-column",
+        "description": "Add a single column to a table",
+        "body": [
+            "RAISERROR(N'Adding column [${1:column}] to [${2:schema}].[${3:table}]...', 0, 0) WITH NOWAIT;",
+            "IF COL_LENGTH(N'[$2].[$3]', N'[$1]') IS NULL",
+            "BEGIN;",
+            "    ALTER TABLE [$2].[$3]",
+            "    ADD [$1] ${4:type} ${5:constraint(s)} ${6:nullable};",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  [$2].[$3] already has column [$1].', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "drop-one-column": {
+        "prefix": "drop-one-column",
+        "description": "Drop a single column from a table",
+        "body": [
+            "RAISERROR(N'Dropping column [${1:column}] from [${2:schema}].[${3:table}]...', 0, 0) WITH NOWAIT;",
+            "ALTER TABLE [$2].[$3]",
+            "DROP COLUMN IF EXISTS [$1];"
+        ]
+    },
+    "add-many-columns": {
+        "prefix": "add-many-columns",
+        "description": "Add multiple columns to a table",
+        "body": [
+            "RAISERROR(N'Adding columns ${1:columns} to [${2:schema}].[${3:table}]...', 0, 0) WITH NOWAIT;",
+            "IF NOT EXISTS (",
+            "    SELECT * FROM [sys].[columns] WHERE [object_id] = OBJECT_ID(N'[$2].[$3]') AND [name] IN (${4: columns, each as N'[column name]'})",
+            ")",
+            "BEGIN;",
+            "    ALTER TABLE [$2].[$3]",
+            "    ADD",
+            "        ${5:column definitions}",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  [$2].[$3] already has columns $1.', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "drop-multiple-columns": {
+        "prefix": "drop-multiple-columns",
+        "description": "Drop multiple columns from a table",
+        "body": [
+            "RAISERROR(N'Dropping columns ${1:columns} from [${2:schema}].[${3:table}]...', 0, 0) WITH NOWAIT;",
+            "ALTER TABLE [$2].[$3]",
+            "DROP COLUMN IF EXISTS $4,",
+            "     COLUMN IF EXISTS $5;"
+        ]
+    },
+    "drop-default-constraint": {
+        "prefix": "drop-default-constraint",
+        "description": "Drop a default constraint from a table",
+        "body": [
+            "RAISERROR(N'Dropping default constraint ${1:constraint}', 0, 0);",
+            "ALTER TABLE [${2:schema}].[${3:table}]",
+            "DROP CONSTRAINT IF EXISTS $1;"
+        ]
+    },
+    "drop-system-constraint": {
+        "prefix": "drop-system-constraint",
+        "description": "Drop a system-named default constraint from a table",
+        "body": [
+            "RAISERROR(N'Dropping system-named default constraint on [${1:schema}].[${2:table}] ( ${3:column} )...', 0, 0) WITH NOWAIT;",
+            "IF EXISTS (",
+            "    SELECT TOP (1) *",
+            "    FROM",
+            "        [sys].[default_constraints]",
+            "    WHERE",
+            "        [parent_object_id] = OBJECT_ID(N'[$1].[$2]', N'U')",
+            "        AND",
+            "        [is_system_named] = CONVERT([bit], 1)",
+            "        AND",
+            "        EXISTS (",
+            "            SELECT TOP (1) *",
+            "            FROM",
+            "                [sys].[columns]",
+            "            WHERE",
+            "                [columns].[object_id] = OBJECT_ID(N'$1', N'U')",
+            "                AND",
+            "                [columns].[name] = N'$3'",
+            "                AND",
+            "                [columns].[column_id] = [default_constraints].[parent_column_id]",
+            "        )",
+            ")",
+            "BEGIN;",
+            "    DECLARE",
+            "        @defaultDropStatement   NVARCHAR(4000);",
+            "",
+            "    SELECT",
+            "        @defaultDropStatement   =   N'ALTER TABLE [$1].[$2] DROP CONSTRAINT '",
+            "                                    + QUOTENAME([name], N'[')",
+            "                                    + N';'",
+            "    FROM",
+            "        [sys].[default_constraints]",
+            "    WHERE",
+            "        [parent_object_id] = OBJECT_ID(N'$1', N'U')",
+            "        AND",
+            "        [is_system_named] = CONVERT([bit], 1)",
+            "        AND",
+            "        EXISTS (",
+            "            SELECT TOP (1) *",
+            "            FROM",
+            "                [sys].[columns]",
+            "            WHERE",
+            "                [columns].[object_id] = OBJECT_ID(N'$1', N'U')",
+            "                AND",
+            "                [columns].[name] = N'$3'",
+            "                AND",
+            "                [columns].[column_id] = [default_constraints].[parent_column_id]",
+            "        )",
+            "    EXECUTE sp_executesql @defaultDropStatement;",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'    System-named default on [$1].[$2] ( $3 ) does not exist.', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "drop-system-primary-key": {
+        "prefix": "drop-system-primary-key",
+        "description": "Drop a system-named primary key from a table",
+        "body": [
+            "RAISERROR(N'Dropping and replacing unnamed primary key on [${1:schema}].[${2:table}]...', 0, 0) WITH NOWAIT;",
+            "IF EXISTS (",
+            "    SELECT TOP (1) *",
+            "    FROM",
+            "        [sys].[key_constraints]",
+            "    WHERE",
+            "        [type] = N'PK'",
+            "        AND",
+            "        [parent_object_id] = OBJECT_ID(N'$1', N'U')",
+            "        AND",
+            "        [is_system_named] = CONVERT([bit], 1)",
+            ")",
+            "BEGIN;",
+            "    DECLARE",
+            "        @pkDropStmt NVARCHAR(4000);",
+            "",
+            "    SELECT",
+            "        @pkDropStmt =   N'ALTER TABLE [$1].[$2] DROP CONSTRAINT '",
+            "                        + QUOTENAME([name], N'[')",
+            "                        + N';'",
+            "    FROM",
+            "        [sys].[key_constraints]",
+            "    WHERE",
+            "        [type] = N'PK'",
+            "        AND",
+            "        [parent_object_id] = OBJECT_ID(N'$1', N'U')",
+            "        AND",
+            "        [is_system_named] = CONVERT([bit], 1)",
+            "",
+            "    EXECUTE sp_executesql @pkDropStmt;",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'    No system-named primary key on [$1].[$2].', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "add-nonclustered-index": {
+        "prefix": "add-nonclustered-index",
+        "description": "Add a nonclustered index to a table",
+        "body": [
+            "RAISERROR(N'Adding index ${1:index} to [${2:schema}].[${3:table}]...', 0, 0) WITH NOWAIT;",
+            "IF NOT EXISTS ( SELECT * FROM [sys].[indexes] WHERE [name] = N'$1' AND [object_id] = OBJECT_ID(N'$2.$3', N'U') )",
+            "BEGIN;",
+            "    CREATE NONCLUSTERED INDEX $1 ON [$2].[$3] ( $4 )",
+            "    INCLUDE ( $5 );",
+            "END;"
+        ]
+    },
+    "drop-nonclustered-index": {
+        "prefix": "drop-nonclustered-index",
+        "description": "Drop a nonclustered index from a table",
+        "body": [
+            "RAISERROR(N'Dropping index ${1:index} from [${2:schema}].[${3:table}]...', 0, 0) WITH NOWAIT;",
+            "DROP INDEX IF EXISTS $1 ON [$2].[$3];"
+        ]
+    },
+    "make-table-temporal": {
+        "prefix": "make-table-temporal, create-history-table",
+        "description": "Create a temporal table to provide record of each record's history",
+        "body": [
+            "-- Create a history table",
+            "RAISERROR(N'Creating table [${1:schema}].[${2:table}History]...', 0, 0) WITH NOWAIT;",
+            "IF OBJECT_ID(N'$1History', N'U') IS NULL",
+            "BEGIN;",
+            "    CREATE TABLE $1.[$2History] (",
+            "    ${3:Copy the schema of the source table exactly, including the [SysStartDate] and [SysEndDate] columns. Do NOT include a primary key or any defaults. This table's contents will be fully managed by SQL Server.}",
+            "    )",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  Table $1.[$2History] already exists.', 0, 0) WITH NOWAIT;",
+            "END;",
+            "        ",
+            "RAISERROR(N'Adding columns [SysStartDate] and [SysEndDate] to [$1].[$2]...', 0, 0) WITH NOWAIT;",
+            "IF NOT EXISTS (",
+            "    SELECT * FROM [sys].[columns] WHERE [object_id] = OBJECT_ID(N'$1', N'U') AND [name] in ( N'SysStartDate', N'SysEndDate' )",
+            ")",
+            "BEGIN;",
+            "    ALTER TABLE [$1].[$2]",
+            "    ADD",
+            "        -- Note: the column defaults are not necessary when creating a temporal table from scratch",
+            "        [SysStartDate]  DATETIME2   GENERATED ALWAYS AS ROW START CONSTRAINT [DF_$2_SysStartDate] DEFAULT (SYSUTCDATETIME()) NOT NULL, -- SQL Server stores this information in UTC, hence the default",
+            "        [SysEndDate]    DATETIME2   GENERATED ALWAYS AS ROW END CONSTRAINT [DF_$2_SysEndDate] DEFAULT (CAST('9999-12-31 23:59:59.9999999' AS DATETIME2)) NOT NULL,",
+            "        PERIOD FOR SYSTEM_TIME ([SysStartDate], [SysEndDate]);",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  [$1].[$2] already has columns [SysStartDate] and [SysEndDate].', 0, 0) WITH NOWAIT;",
+            "END;",
+            "        ",
+            "RAISERROR(N'Enabling system versioning for [$1].[$2]...', 0, 0) WITH NOWAIT;",
+            "IF OBJECTPROPERTY(OBJECT_ID(N'$1, N'U'), N'TableTemporalType') = 0",
+            "BEGIN;",
+            "    ALTER TABLE [$1].[$2]",
+            "    SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = $1.[$2History]));",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  [$1].[$2] already has system versioning enabled.', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "remove-temporality-from-table": {
+        "prefix": "remove-temporality-from-table",
+        "description": "Remove temporality from a table",
+        "body": [
+            "-- Disable system versioning and remove the period",
+            "RAISERROR(N'Disabling system versioning for [${1:schema}].[${2:table}]', 0, 0) WITH NOWAIT;",
+            "IF OBJECTPROPERTY(OBJECT_ID(N'$1, N'U'), N'TableTemporalType') = 2",
+            "BEGIN;",
+            "    ALTER TABLE [$1].[$2]",
+            "    SET (SYSTEM_VERSIONING = OFF);",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  [$1].[$2] does not have system versioning enabled.', 0, 0) WITH NOWAIT;",
+            "END;",
+            "",
+            "RAISERROR(N'Removing period for system time from [$1].[$2]', 0, 0) WITH NOWAIT;",
+            "IF EXISTS ( SELECT * FROM [sys].[periods] WHERE [object_id] = OBJECT_ID(N'$1.$2, N'U') )",
+            "BEGIN;",
+            "    ALTER TABLE [$1].[$2]",
+            "    DROP PERIOD FOR SYSTEM_TIME;",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  [$1].[$2] does not have a period for system time.', 0, 0) WITH NOWAIT;",
+            "END;",
+            "",
+            "-- Remove the period columns and history table",
+            "RAISERROR(N'Removing default [DF_$2_SysStartDate]...', 0, 0);",
+            "IF OBJECT_ID(N'$1.DF_$2_SysStartDate', N'D') IS NOT NULL",
+            "BEGIN;",
+            "    ALTER TABLE [$1].[$2]",
+            "    DROP CONSTRAINT [DF_$2_SysStartDate];",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  [DF_$2_SysStartDate] does not exist.', 0, 0);",
+            "END;",
+            "",
+            "RAISERROR(N'Removing default [DF_$2_SysEndDate]...', 0, 0);",
+            "IF OBJECT_ID(N'$1.DF_$2_SysEndDate', N'D') IS NOT NULL",
+            "BEGIN;",
+            "    ALTER TABLE [$1].[$2]",
+            "    DROP CONSTRAINT [DF_$2_SysEndDate];",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  [DF_$2_SysEndDate] does not exist.', 0, 0);",
+            "END;",
+            "",
+            "RAISERROR(N'Removing columns [SysStartDate] and [SysEndDate] from [$1].[$2]...', 0, 0);",
+            "IF EXISTS (",
+            "    SELECT * FROM [sys].[columns] WHERE [object_id] = OBJECT_ID($1.$2', N'U') AND [name] IN ( N'SysStartDate', N'SysEndDate' )",
+            ")",
+            "BEGIN;",
+            "    ALTER TABLE [$1].[$2]",
+            "    DROP COLUMN",
+            "        [SysStartDate],",
+            "        [SysEndDate];",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  [$1].[$2] does not have columns [SysStartDate] and [SysEndDate].', 0, 0);",
+            "END;",
+            "",
+            "RAISERROR(N'Dropping [$1].[$2History]]...', 0, 0) WITH NOWAIT;",
+            "IF OBJECT_ID(N'$1.$2History', N'U') IS NOT NULL",
+            "BEGIN;",
+            "    DROP TABLE [$1].[$2History];",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  [$1].[$2History] does not exist.', 0, 0) WITH NOWAIT;",
+            "END;",
+        ]
+    },
+    "create-view": {
+        "prefix": "create-view",
+        "description": "Create a view in the database",
+        "body": [
+            "RAISERROR(N'${1|Creating,Altering|} view [${2:schema}].[${3:view}]...', 0, 0) WITH NOWAIT;",
+            "EXEC sp_executesql N'CREATE OR ALTER VIEW [$2].[$3]",
+            "AS",
+            "SELECT  ${4:columns}';"
+        ]
+    },
+    "drop-view": {
+        "prefix": "drop-view",
+        "description": "Drop a view in the database",
+        "body": [
+            "RAISERROR(N'Dropping view [${1:schema}].[${2:view}]...', 0, 0) WITH NOWAIT;",
+            "DROP VIEW IF EXISTS [$1].[$2];"
+        ]
+    },
+    "create-stored-procedure": {
+        "prefix": "create-stored-procedure",
+        "description": "Create a stored procedure in the database",
+        "body": [
+            "RAISERROR(N'${1|Creating,Altering|} [${2:schema}].[${3:stored procedure}]...', 0, 0) WITH NOWAIT;",
+            "EXEC sp_executesql N'",
+            "${4:paste contents}",
+            "';"
+        ]
+    },
+    "drop-stored-procedure": {
+        "prefix": "drop-stored-procedure",
+        "description": "Drop a stored procedure in the database",
+        "body": [
+            "RAISERROR(N'Dropping [${1:schema}].[${2:stored procedure}]...', 0, 0) WITH NOWAIT;",
+            "DROP PROCEDURE IF EXISTS [$1].[$2];"
+        ]
+    },
+    "create-sequence": {
+        "prefix": "create-sequence",
+        "description": "Create a sequence in the database",
+        "body": [
+            "RAISERROR(N'Creating [${1:schema}].[${2:sequence}]...', 0, 0) WITH NOWAIT;",
+            "IF OBJECT_ID(N'$1.$2', N'SO') IS NULL",
+            "BEGIN;",
+            "    CREATE SEQUENCE [$1].[$2]",
+            "        AS ${3:type}",
+            "        START WITH ${4:starting number} -- Reserved data range for testing",
+            "        INCREMENT BY ${5:increment}",
+            "        CACHE ${6:cache};",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  Sequence [$1].[$2] already exists.', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "drop-sequence": {
+        "prefix": "drop-sequence",
+        "description": "Drop a sequence in the database",
+        "body": [
+            "RAISERROR(N'Dropping [${1:schema}].[${2:sequence}]...', 0, 0) WITH NOWAIT;",
+            "DROP SEQUENCE IF EXISTS [$1].[$2];"
+        ]
+    },
+    "create-user-defined-table-type": {
+        "prefix": "create-user-defined-table-type",
+        "description": "Create a user-defined table type in the database",
+        "body": [
+            "RAISERROR(N'Creating user-defined table type [${1:schema}].[${2:type name}]...', 0, 0) WITH NOWAIT;",
+            "IF TYPE_ID(N'$1.$2') IS NULL",
+            "BEGIN;",
+            "    CREATE TYPE [$1].[$2] AS TABLE(",
+            "${3:columns}",
+            ");",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  User-defined table type [$1].[$2] already exists.', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "get-all-objects-for-type": {
+        "prefix": "get-all-objects-for-type",
+        "description": "Get all database objects dependent on the given user-defined table type",
+        "body": [
+            "SELECT s.name, o.name, def = OBJECT_DEFINITION(d.referencing_id)",
+            "FROM sys.sql_expression_dependencies AS d",
+            "INNER JOIN sys.objects AS o",
+            "    ON d.referencing_id = o.[object_id]",
+            "INNER JOIN sys.schemas AS s",
+            "    ON o.[schema_id] = s.[schema_id]",
+            "WHERE d.referenced_database_name IS NULL",
+            "AND d.referenced_schema_name = N'${1:schema}' --don't include square brackets, [], lookup will fail",
+            "AND d.referenced_entity_name = N'${2:type name}'; --don't include square brackets, [], lookup will fail"
+        ]
+    },
+    "remove-dependency-on-user-defined-table-type": {
+        "prefix": "remove-dependency-on-user-defined-table-type, drop-dependency-on-user-define-table-type",
+        "description": "Remove dependency on user-defined table type from a database object.",
+        "body": [
+            "CREATE OR ALTER ${1|PROCEDURE,FUNCTION|} [${2:schema}].[${3:object}]",
+            "AS",
+            "BEGIN;",
+            " SET NOCOUNT ON;",
+            " SELECT 1 AS UNDEFINED;",
+            "END;"
+        ]
+    },
+    "drop-user-defined-table-type": {
+        "prefix": "drop-user-defined-table-type",
+        "description": "Drop a user-defined table type from ",
+        "body": [
+            "RAISERROR(N'Dropping user-defined table type [${1:schema}].[${2:type name}]...', 0, 0) WITH NOWAIT;",
+            "IF TYPE_ID(N'$1.$2') IS NOT NULL",
+            "BEGIN;",
+            "    DROP TYPE [$1].[$2];",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  User-defined table type [$1].[$2] does not exist.', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "grant-database-permission": {
+        "prefix": "grant-database-permission",
+        "description": "Grant a database-scoped permission to a user or role",
+        "body": [
+            "RAISERROR(N'Creating Permission: GRANT ${1|CONNECT,EXECUTE,SELECT,UPDATE,INSERT,SHOWPLAN,REFERENCES,VIEW DEFINITION,DELETE,ALTER|} TO ${2:grantee}...', 0, 0) WITH NOWAIT;",
+            "BEGIN;",
+            "    GRANT $1 TO [$2];",
+            "END;"
+        ]
+    },
+    "revoke-database-permission": {
+        "prefix": "revoke-database-permission",
+        "description": "Revoke a database-scoped permission from a user or role",
+        "body": [
+            "RAISERROR(N'Revoking Permission: GRANT ${1|CONNECT,EXECUTE,SELECT,UPDATE,INSERT,SHOWPLAN,REFERENCES,VIEW DEFINITION,DELETE,ALTER|} TO ${2:grantee}...', 0, 0) WITH NOWAIT;",
+            "BEGIN;",
+            "    REVOKE $1 FROM $2;",
+            "END;"
+        ]
+    },
+    "grant-schema-permission": {
+        "prefix": "grant-schema-permission",
+        "description": "Grant a schema-scoped permission to a user or role",
+        "body": [
+            "RAISERROR(N'Creating Permission: GRANT ${1|ALTER,CONTROL,CREATE SEQUENCE,DELETE,EXECUTE,INSERT,REFERENCES,SELECT,TAKE OWNERSHIP,UPDATE,VIEW CHANGE TRACKING,VIEW DEFINITION|} ON SCHEMA::${2:schema} TO ${3:grantee}...', 0, 0) WITH NOWAIT;",
+            "BEGIN;",
+            "    GRANT $1 ON SCHEMA::[$2] TO $3;",
+            "END;"
+        ]
+    },
+    "revoke-schema-permission": {
+        "prefix": "revoke-schema-permission",
+        "description": "Revoke a schema-scoped permission to a user or role",
+        "body": [
+            "RAISERROR(N'Revoking Permission: GRANT ${1|ALTER,CONTROL,CREATE SEQUENCE,DELETE,EXECUTE,INSERT,REFERENCES,SELECT,TAKE OWNERSHIP,UPDATE,VIEW CHANGE TRACKING,VIEW DEFINITION|} ON SCHEMA::${2:schema} TO ${3:grantee}...', 0, 0) WITH NOWAIT;",
+            "BEGIN;",
+            "    REVOKE $1 ON SCHEMA::[$2] FROM $3;",
+            "END;"
+        ]
+    },
+    "grant-object-permission": {
+        "prefix": "grant-object-permission",
+        "description": "Grant an object-scoped permission to a user or role",
+        "body": [
+            "RAISERROR(N'Granting Permission: GRANT ${1|SELECT,EXECUTE,UPDATE,INSERT,DELETE,REFERENCES|} ON OBJECT::[${2:schema}].[${3:object}] TO ${4:grantee}...', 0, 0) WITH NOWAIT;",
+            "BEGIN;",
+            "    GRANT $1 ON OBJECT::[$2].[$3] TO $4;",
+            "END;"
+        ]
+    },
+    "revoke-object-permission": {
+        "prefix": "revoke-object-permission",
+        "description": "Revoke an object-scoped permission from a user or role",
+        "body": [
+            "RAISERROR(N'Revoking Permission: GRANT ${1|SELECT,EXECUTE,UPDATE,INSERT,DELETE,REFERENCES|} ON OBJECT::[${2:schema}].[${3:schema}] TO ${4:grantee}...', 0, 0) WITH NOWAIT;",
+            "BEGIN;",
+            "    REVOKE $1 ON OBJECT::[$2].[$3] FROM $4;",
+            "END;"
+        ]
+    },
+    "grant-type-permission": {
+        "prefix": "grant-type-permission",
+        "description": "Grant a type-scoped permission to a user or role",
+        "body": [
+            "RAISERROR(N'Granting Permission: GRANT ${1|EXECUTE,CONTROL,REFERENCES,TAKE OWNERSHIP,VIEW DEFINITION|} ON TYPE::[${2:schema}].[${3:type name}] TO ${4:grantee}...', 0, 0) WITH NOWAIT;",
+            "BEGIN;",
+            "    GRANT $1 ON TYPE::[$2].[$3] TO $4;",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N' $4 has already been granted $1 on user-defined table type [$2].[$3].', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "revoke-type-permission": {
+        "prefix": "revoke-type-permission",
+        "description": "Grant a type-scoped permission from a user or role",
+        "body": [
+            "RAISERROR(N'Revoking Permission: GRANT ${1|EXECUTE,CONTROL,REFERENCES,TAKE OWNERSHIP,VIEW DEFINITION|} ON TYPE::[${2:schema}].[${3:type name}] TO ${4:grantee}...', 0, 0) WITH NOWAIT;",
+            "IF EXISTS (",
+            "    SELECT TOP (1) *",
+            "    FROM",
+            "        [sys].[database_permissions]",
+            "    WHERE",
+            "        [class_desc] = N'TYPE'",
+            "        AND [major_id] = TYPE_ID(N'$2.$3')",
+            "        AND [permission_name] = N'$1'",
+            "        AND [state_desc] = N'GRANT'",
+            "        AND USER_NAME([grantee_principal_id]) = N'$4'",
+            ")",
+            "BEGIN;",
+            "    REVOKE $1 ON TYPE::[$2].[$3] FROM $4;",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  $4 has not been granted $1 on uder-defined table type [$2].[$3].', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "create-role": {
+        "prefix": "create-role",
+        "description": "Create a role in the database",
+        "body": [
+            "DECLARE @RoleName NVARCHAR(100) = N'${1:role}'",
+            "RAISERROR(N'Creating role %s...', 0, 0, @RoleName) WITH NOWAIT;",
+            "IF DATABASE_PRINCIPAL_ID(@RoleName) IS NULL",
+            "BEGIN;",
+            "    DECLARE @CreateRoleScript NVARCHAR(1000) = N'CREATE ROLE ' + @RoleName + ' AUTHORIZATION [dbo];'",
+            "    EXEC sp_executesql @CreateRoleScript;",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  Role %s already exists...', 0, 0, @RoleName) WITH NOWAIT;",
+            "END;",
+        ]
+    },
+    "create-role-easy": {
+        "prefix": "create-role-easy",
+        "description": "Create a role in the database",
+        "body": [
+            "RAISERROR(N'Creating role ${1:role}...', 0, 0) WITH NOWAIT;",
+            "IF DATABASE_PRINCIPAL_ID(N'$1') IS NULL",
+            "BEGIN;",
+            "    CREATE ROLE $1 AUTHORIZATION [dbo];",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  Role $1 already exists...', 0, 0) WITH NOWAIT;",
+            "END;",
+        ]
+    },
+    "drop-role": {
+        "prefix": "drop-role",
+        "description": "Drop a role in the database",
+        "body": [
+            "DECLARE @RoleName NVARCHAR(100) = N'${1:role}'",
+            "RAISERROR(N'Dropping role %s...', 0, 0, @RoleName) WITH NOWAIT;",
+            "IF DATABASE_PRINCIPAL_ID(@RoleName) IS NOT NULL",
+            "BEGIN;",
+            "    DECLARE @DropRoleScript NVARCHAR(1000) = N'DROP ROLE ' + @RoleName",
+            "    EXEC sp_executesql @DropRoleScript;",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  Role %s does not exist...', 0, 0, @RoleName) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "drop-role-easy": {
+        "prefix": "drop-role-easy",
+        "description": "Drop a role in the database",
+        "body": [
+            "RAISERROR(N'Dropping role ${1:role}...', 0, 0) WITH NOWAIT;",
+            "IF DATABASE_PRINCIPAL_ID(N'$1') IS NOT NULL",
+            "BEGIN;",
+            "    DROP ROLE IF EXISTS $1",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  Role $1 does not exist...', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "add-member-to-role": {
+        "prefix": "add-member-to-role",
+        "description": "Add a member to a role in the database",
+        "body": [
+            "-- you might have already declared these variables in your script if you just created the role and/or user",
+            "DECLARE @RoleName NVARCHAR(100) = N'${1:role}'",
+            "DECLARE @UserName NVARCHAR(100) = N'${2:user}';",
+            "RAISERROR(N'Adding %s to role %s...', 0, 0, @UserName, @RoleName) WITH NOWAIT;",
+            "IF IS_ROLEMEMBER(@RoleName, @UserName) = 0",
+            "BEGIN;",
+            "    DECLARE @AddToRoleScript NVARCHAR(1000) = N'ALTER ROLE ' + @RoleName + ' ADD MEMBER ' + @UserName",
+            "    EXEC sp_executesql @AddToRoleScript;",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  %s is already a member of role %s.', 0, 0, @UserName, @RoleName) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "add-member-to-role-easy": {
+        "prefix": "add-member-to-role-easy",
+        "description": "Add a member to a role in the database",
+        "body": [
+            "RAISERROR(N'Adding ${1:user} to role ${2:role}...', 0, 0) WITH NOWAIT;",
+            "IF IS_ROLEMEMBER(N'$2', N'$1') = 0",
+            "BEGIN;",
+            "    ALTER ROLE $2 ADD MEMBER $1",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  $1 is already a member of role $2.', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "drop-member-from-role": {
+        "prefix": "drop-member-from-role",
+        "description": "Drop a member from a role in the database",
+        "body": [
+            "DECLARE @RoleName NVARCHAR(100) = N'${1:role}'",
+            "DECLARE @UserName NVARCHAR(100) = N'${2:user}';",
+            "RAISERROR(N'Dropping %s to role %s...', 0, 0, @UserName, @RoleName) WITH NOWAIT;",
+            "IF IS_ROLEMEMBER(@RoleName, @UserName) = 1",
+            "BEGIN;",
+            "    DECLARE @DropFromRoleScript NVARCHAR(1000) = N'ALTER ROLE ' + @RoleName + ' DROP MEMBER ' + @UserName",
+            "    EXEC sp_executesql @DropFromRoleScript;",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  %s is not a member of role %s.', 0, 0, @UserName, @RoleName) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "server-change-script": {
+        "prefix": "change-script",
+        "description": "Create a database change script",
+        "body": [
+            "GO",
+            "SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, QUOTED_IDENTIFIER ON;",
+            "SET NUMERIC_ROUNDABORT OFF;",
+            "        ",
+            "GO",
+            "USE [msdb];",
+            "        ",
+            "GO",
+            "DECLARE @DeploymentOrRollback NVARCHAR(11) = '${1|ROLLBACK,DEPLOYMENT|}'",
+            "DECLARE @WorkItemID NVARCHAR(7) = '${2:TFS Work Item}';",
+            "DECLARE @Description NVARCHAR(100) = '${3:Description}'",
+            "DECLARE @InfoString NVARCHAR(200) =",
+            "    @DeploymentOrRollback + ' of ' + @WorkItemID + ' - ' + @Description + ' - '",
+            "        ",
+            "PRINT N'=================================================';",
+            "PRINT @InfoString + 'STARTED with login ' + ORIGINAL_LOGIN() + ' on instance ' + @@SERVERNAME + + ' in database ' + DB_NAME() + ' at ' + CONVERT(nvarchar(27), SYSUTCDATETIME(), 121) + ' UTC.';",
+            "PRINT N'=================================================';",
+            "        ",
+            "BEGIN TRY",
+            "        ",
+            "    BEGIN TRANSACTION",
+            "        ${4:content}",
+            "    COMMIT TRANSACTION",
+            "        ",
+            "    PRINT N'=================================================';",
+            "    PRINT @InfoString + 'COMPLETED at ' + CONVERT(nvarchar(27), SYSUTCDATETIME(), 121) + ' UTC.';",
+            "    PRINT N'=================================================';",
+            "        ",
+            "END TRY",
+            "        ",
+            "BEGIN CATCH",
+            "    IF @@TRANCOUNT > 0",
+            "        ROLLBACK TRANSACTION;",
+            "    SELECT 'It rolled back'",
+            "        ",
+            "    PRINT N'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';",
+            "    PRINT @InfoString + 'FAILED at ' + CONVERT(nvarchar(27), SYSUTCDATETIME(), 121) + ' UTC.';",
+            "    PRINT N'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';",
+            "        ",
+            "    THROW;",
+            "END CATCH;",
+        ]
+    },
+    "create-login": {
+        "prefix": "create-login",
+        "description": "Create a login on the server",
+        "body": [
+            "DECLARE @LoginName NVARCHAR(100) = N'${1:login}';",
+            "RAISERROR('Creating login \"%s\" if not exists...', 0, 0, @LoginName) WITH NOWAIT;",
+            "IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = @LoginName)",
+            "BEGIN",
+            "    DECLARE @CreateLoginScript NVARCHAR(1000) = N'CREATE LOGIN ' + @LoginName + ' WITH PASSWORD = ''Password!'', DEFAULT_DATABASE = [${2:default}], DEFAULT_LANGUAGE = [us_english], CHECK_POLICY = ON, CHECK_EXPIRATION = OFF;';",
+            "    EXEC sp_executesql @CreateLoginScript;",
+            "END"
+        ]
+    },
+    "create-login-easy": {
+        "prefix": "create-login-easy",
+        "description": "Create a login on the server",
+        "body": [
+            "RAISERROR('Creating login \"${1:login}\" if not exists...', 0, 0) WITH NOWAIT;",
+            "IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = N'$1')",
+            "BEGIN",
+            "    CREATE LOGIN $1 WITH PASSWORD = 'Password!', DEFAULT_DATABASE = [${2:default}], DEFAULT_LANGUAGE = [us_english], CHECK_POLICY = ON, CHECK_EXPIRATION = OFF;",
+            "END"
+        ]
+    },
+    "delete-login": {
+        "prefix": "delete-login",
+        "description": "Delete a login from the server",
+        "body": [
+            "DECLARE @LoginName NVARCHAR(100) = N'${1:login}'",
+            "RAISERROR('Dropping login \"%s\" if exists...', 0, 0, @LoginName) WITH NOWAIT;",
+            "IF EXISTS (SELECT 1 FROM sys.server_principals WHERE name = @LoginName)",
+            "BEGIN",
+            "    DECLARE @DropLoginScript NVARCHAR(100) = N'DROP LOGIN ' + @LoginName;",
+            "    EXEC sp_executesql @DropLoginScript;",
+            "END"
+        ]
+    },
+    "delete-login-easy": {
+        "prefix": "delete-login-easy",
+        "description": "Delete a login from the server",
+        "body": [
+            "RAISERROR('Dropping login \"${1:login}\" if exists...', 0, 0) WITH NOWAIT;",
+            "IF EXISTS (SELECT 1 FROM sys.server_principals WHERE name = N'$1')",
+            "BEGIN",
+            "    DROP LOGIN $1;",
+            "END"
+        ]
+    },
+    "create-user-without-login": {
+        "prefix": "create-user-without-login",
+        "description": "Create a user on the server without a login",
+        "body": [
+            "DECLARE @UserName NVARCHAR(100) = N'${1:user}';",
+            "RAISERROR(N'Creating user %s...', 0, 0, @UserName) WITH NOWAIT;",
+            "IF USER_ID(@UserName) IS NULL",
+            "BEGIN;",
+            "    DECLARE @CreateUserScript NVARCHAR(1000) =",
+            "        N'CREATE USER ' + @UserName + ' WITHOUT LOGIN WITH DEFAULT_SCHEMA = ${2:schema};'",
+            "    EXEC sp_executesql @CreateUserScript",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  User %s already exists.', 0, 0, @UserName) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "create-user-with-login": {
+        "prefix": "create-user-with-login",
+        "description": "Create a user on the server with a login",
+        "body": [
+            "DECLARE @UserName NVARCHAR(100) = N'${1:user}';",
+            "RAISERROR(N'Creating user %s...', 0, 0, @UserName) WITH NOWAIT;",
+            "IF USER_ID(@UserName) IS NULL",
+            "BEGIN;",
+            "    DECLARE @CreateUserScript NVARCHAR(1000) =",
+            "        N'CREATE USER ' + @UserName + ' FOR LOGIN ' + @UserName + ' WITH DEFAULT_SCHEMA = ${2:schema};'",
+            "    EXEC sp_executesql @CreateUserScript",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  User %s already exists.', 0, 0, @UserName) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "create-user-with-login-easy": {
+        "prefix": "create-user-with-login-easy",
+        "description": "Create a user on the server with a login",
+        "body": [
+            "RAISERROR(N'Creating user ${1:user}...', 0, 0) WITH NOWAIT;",
+            "IF USER_ID(N'$1') IS NULL",
+            "BEGIN",
+            "    CREATE USER $1 FOR LOGIN $1 WITH DEFAULT_SCHEMA = ${2:schema};",
+            "END",
+            "ELSE BEGIN",
+            "    RAISERROR(N'  User $1 already exists.', 0, 0) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "drop-user": {
+        "prefix": "drop-user",
+        "description": "Delete a user from the server",
+        "body": [
+            "DECLARE @UserName NVARCHAR(100) = N'${1:user}';",
+            "RAISERROR(N'Dropping user %s...', 0, 0, @UserName) WITH NOWAIT;",
+            "IF USER_ID(@UserName) IS NOT NULL",
+            "BEGIN;",
+            "    DECLARE @DropUserScript NVARCHAR(1000) = N'DROP USER ' + @UserName",
+            "    EXEC sp_executesql @DropUserScript",
+            "END;",
+            "ELSE BEGIN;",
+            "    RAISERROR(N'  User %s does not exist.', 0, 0, @UserName) WITH NOWAIT;",
+            "END;"
+        ]
+    },
+    "drop-user-easy": {
+        "prefix": "drop-user-easy",
+        "description": "Delete a user from the server without all the gunk",
+        "body": [
+            "RAISERROR(N'Dropping user ${1:user}...', 0, 0) WITH NOWAIT;",
+            "    DROP USER IF EXISTS $1;"
+        ]
+    },
+    "create-sql-agent-job": {
+        "prefix": "create-sql-agent-job",
+        "description": "Create a job for the SQL Server Agent",
+        "body": [
+            "USE [MSDB]",
+            "GO",
+            "",
+            "DECLARE @JobName NVARCHAR(255) = N'${1:job name}';",
+            "DECLARE @JobDescription NVARCHAR(512) = N'${2:job description'",
+            "DECLARE @JobCategory NVARCHAR(255) = N'${3:job category}';",
+            "DECLARE @ReturnCode INT = 0;",
+            "DECLARE @jobId BINARY(16);",
+            "",
+            "BEGIN TRANSACTION",
+            "    IF EXISTS (SELECT job_id FROM msdb.dbo.sysjobs WHERE name = @JobName)",
+            "    BEGIN",
+            "        PRINT CONCAT('The job ', @JobName, ' already exists...')",
+            "    END",
+            "    ELSE BEGIN",
+            "",
+            "        PRINT CONCAT('Creating Job: ', @JobName)",
+            "",
+            "        IF NOT EXISTS (SELECT name FROM msdb.dbo.syscategories WHERE name=@JobCategory AND category_class=1) BEGIN",
+            "",
+            "            PRINT CONCAT('Creating Job Category: ', @JobCategory)",
+            "",
+            "            EXEC @ReturnCode = msdb.dbo.sp_add_category @class=N'JOB', @type=N'LOCAL', @name=@JobCategory",
+            "",
+            "            IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback",
+            "        END",
+            "",
+            "        EXEC @ReturnCode =  msdb.dbo.sp_add_job",
+            "                @job_name=@JobName,",
+            "                -- IMPORTANT: double check that you have the job DISABLED in DatabaseProjects\\QTrade\\PostDeploymentScripts\\Create_SQLAgentJobs.sql",
+            "                -- This is important so that when we update the standby server that we don't have all of these jobs magically running on both servers.",
+            "                @enabled=0,",
+            "                @notify_level_eventlog=0,",
+            "                @notify_level_email=0,",
+            "                @notify_level_netsend=0,",
+            "                @notify_level_page=0,",
+            "                @delete_level=0,",
+            "                @description=@JobDescription,",
+            "                @category_name=@JobCategory,",
+            "                @owner_login_name=N'sa',",
+            "                @job_id = @jobId OUTPUT",
+            "",
+            "        IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback",
+            "",
+            "        PRINT 'Job Successfully Created'",
+            "    END",
+            "COMMIT TRANSACTION",
+            "GOTO EndSave",
+            "",
+            "QuitWithRollback:",
+            "    IF (@@TRANCOUNT > 0) ROLLBACK TRANSACTION",
+            "EndSave:",
+        ]
+    },
+    "add-step-to-sql-agent-job": {
+        "prefix": "add-step-to-sql-agent-job, add-sql-agent-job-step",
+        "description": "Add a step to a SQL agent job",
+        "body": [
+            "USE [MSDB]",
+            "GO",
+            "",
+            "DECLARE @JobName NVARCHAR(255) = N'${1:job name}';",
+            "DECLARE @JobStepName NVARCHAR(255) = N'${2:job step name}'",
+            "DECLARE @TargetDatabase NVARCHAR(255) = N'${3:target database}' -- specify the DB to execute the command against",
+            "DECLARE @ReturnCode INT = 0;",
+            "DECLARE @jobId BINARY(16) = NULL;",
+            "",
+            "BEGIN TRANSACTION",
+            "",
+            "    SELECT @jobId = job_id FROM msdb.dbo.sysjobs WHERE [name] = @JobName;",
+            "",
+            "    IF (@jobId IS NULL)",
+            "    BEGIN",
+            "        PRINT CONCAT(N'Error: The job ', @JobName, N' does not exist, aborting...')",
+            "        GOTO QuitWithRollback",
+            "    END",
+            "    ELSE BEGIN",
+            "        PRINT CONCAT('Adding Job Step to: ', @JobName, '...')",
+            "        EXEC @ReturnCode = msdb.dbo.sp_add_jobstep",
+            "            @job_id=@jobId,",
+            "            @step_name=@JobStepName,",
+            "            @step_id=1,",
+            "            @cmdexec_success_code=0,",
+            "            @on_success_action=1,",
+            "            @on_success_step_id=0,",
+            "            @on_fail_action=4,",
+            "            @on_fail_step_id=2,",
+            "            @retry_attempts=0,",
+            "            @retry_interval=0,",
+            "            @os_run_priority=0,",
+            "            @subsystem=N'TSQL',",
+            "            @command=N'SELECT 1 AS BestResultEver',",
+            "            @database_name=@TargetDatabase,",
+            "            @flags=0",
+            "    IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback",
+            "",
+            "        PRINT CONCAT('Job Step Successfully added to: ', @JobName, '.')",
+            "    END",
+            "COMMIT TRANSACTION",
+            "GOTO EndSave",
+            "",
+            "QuitWithRollback:",
+            "    PRINT 'Something went wrong, rolling back transaction...'",
+            "    IF (@@TRANCOUNT > 0) ROLLBACK TRANSACTION",
+            "EndSave:",
+        ]
+    },
+    "update-step-sql-agent-job": {
+        "prefix": "update-step-sql-agent-job",
+        "description": "Update a step in a SQL Agent job",
+        "body": [
+            "USE [MSDB]",
+            "GO",
+            "",
+            "DECLARE @JobName NVARCHAR(255) = N'${1:job name}';",
+            "DECLARE @JobStepId INT = 1;",
+            "DECLARE @TargetDatabase NVARCHAR(255) = N'${2:target}'",
+            "DECLARE @ReturnCode INT = 0;",
+            "DECLARE @jobId BINARY(16) = NULL;",
+            "",
+            "BEGIN TRANSACTION",
+            "",
+            "    SELECT @jobId = job_id FROM msdb.dbo.sysjobs WHERE [name] = @JobName;",
+            "",
+            "    IF (@jobId IS NULL)",
+            "    BEGIN",
+            "        PRINT CONCAT(N'Error: The job ', @JobName, N' does not exist, aborting...')",
+            "        GOTO QuitWithRollback",
+            "    END",
+            "    ELSE BEGIN",
+            "        PRINT CONCAT('Updating Step ', @JobStepId, ' of ', @JobName, '...')",
+            "",
+            "        EXEC @ReturnCode = dbo.sp_update_jobstep",
+            "            @job_name=@JobName,",
+            "            @step_id=@JobStepId,",
+            "            @subsystem=N'TSQL',",
+            "            @command=N'SELECT 2 AS SecondBestChangeEver',",
+            "            @database_name=@TargetDatabase",
+            "",
+            "        IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback",
+            "",
+            "        PRINT 'Job Step successfully updated.'",
+            "    END",
+            "COMMIT TRANSACTION",
+            "GOTO EndSave",
+            "",
+            "QuitWithRollback:",
+            "    PRINT 'Something went wrong, rolling back transaction...'",
+            "    IF (@@TRANCOUNT > 0) ROLLBACK TRANSACTION",
+            "EndSave:",
+        ]
+    },
+    "delete-step-sql-agent-job": {
+        "prefix": "delete-step-sql-agent-job",
+        "description": "Delete a step from a SQL Agent job",
+        "body": [
+            "USE [MSDB]",
+            "GO",
+            "",
+            "DECLARE @JobName NVARCHAR(255) = N'${1:job name}';",
+            "DECLARE @JobStepId INT = 1;",
+            "DECLARE @ReturnCode INT = 0;",
+            "DECLARE @jobId BINARY(16) = NULL;",
+            "",
+            "BEGIN TRANSACTION",
+            "",
+            "    SELECT @jobId = job_id FROM msdb.dbo.sysjobs WHERE [name] = @JobName;",
+            "",
+            "    IF (@jobId IS NULL)",
+            "    BEGIN",
+            "        PRINT CONCAT(N'Error: The job ', @JobName, N' does not exist, aborting...')",
+            "        GOTO QuitWithRollback",
+            "    END",
+            "    ELSE BEGIN",
+            "        PRINT CONCAT('Deleting job step ', @JobStepId, ' of ', @JobName, '...')",
+            "",
+            "        EXEC @ReturnCode = dbo.sp_delete_jobstep",
+            "            @job_name = @JobName,",
+            "            @step_id = @JobStepId",
+            "",
+            "        IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback",
+            "",
+            "        PRINT 'Job step successfully deleted.'",
+            "    END",
+            "COMMIT TRANSACTION",
+            "GOTO EndSave",
+            "",
+            "QuitWithRollback:",
+            "    PRINT 'Something went wrong, rolling back transaction...'",
+            "    IF (@@TRANCOUNT > 0) ROLLBACK TRANSACTION",
+            "EndSave:",
+        ]
+    },
+    "add-job-schedule-sql-agent-job": {
+        "prefix": "add-job-schedule-sql-agent-job",
+        "description": "Add a job schedule to a SQL Agent job",
+        "body": [
+            "USE [MSDB]",
+            "GO",
+            "",
+            "DECLARE @JobName NVARCHAR(255) = N'${1:job name}';",
+            "DECLARE @ScheduleName NVARCHAR(255) = N'${2:schedule name}';",
+            "DECLARE @ReturnCode INT = 0;",
+            "DECLARE @jobId BINARY(16) = NULL;",
+            "",
+            "BEGIN TRANSACTION",
+            "",
+            "    SELECT @jobId = job_id FROM msdb.dbo.sysjobs WHERE [name] = @JobName;",
+            "",
+            "    IF (@jobId IS NULL)",
+            "    BEGIN",
+            "        PRINT CONCAT(N'Error: The job ', @JobName, N' does not exist, aborting...')",
+            "        GOTO QuitWithRollback",
+            "    END",
+            "    ELSE BEGIN",
+            "        PRINT CONCAT('Adding schedule to job: ', @JobName, '...')",
+            "",
+            "        --https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-add-jobschedule-transact-sql?view=sql-server-2016",
+            "        EXEC @ReturnCode = msdb.dbo.sp_add_jobschedule",
+            "            @job_name = @JobName,",
+            "            @name = @ScheduleName,",
+            "            @freq_type = 8, -- Weekly",
+            "            @freq_interval = 64, -- Saturday",
+            "            @freq_recurrence_factor = 1, -- every week",
+            "            @active_start_time = 20000 -- 2:00 AM           ",
+            "",
+            "        IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback",
+            "",
+            "        PRINT 'Successfully added schedule.'",
+            "    END",
+            "COMMIT TRANSACTION",
+            "GOTO EndSave",
+            "",
+            "QuitWithRollback:",
+            "    PRINT 'Something went wrong, rolling back transaction...'",
+            "    IF (@@TRANCOUNT > 0) ROLLBACK TRANSACTION",
+            "EndSave:",
+        ]
+    }
+}
