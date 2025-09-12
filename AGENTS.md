@@ -13,3 +13,5 @@
 - When you are asked to implement a Jira ticket, please create a new git branch, based off the primary branch, which should be called `jira/{ticketId}`. Before creating the branch, make sure to pull the latest changes from the primary branch.
 - When committing changes, only commit files that you've modified.
 - If you are making changes to a Markdown file in ~/.amp, you do not need my permission to make changes to those files.
+- If I say "Remind me to..." or "Remind me about..." or anything about adding a task to a to-do list, add it to ~/.amp/TODO.md as a list item with a checkbox. If I give it any kind of deadline (e.g. before the end of the day, at 3:00, on Monday, etc.), be sure to add that.
+- In ~/.amp/TODO.md, items should be ordered by most urgent to least urgent, and any two tasks with the same urgency should be ordered by when they were created
