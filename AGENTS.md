@@ -1,0 +1,15 @@
+- Ask clarifying questions when you're unsure about my request.
+- Don't pat me on the back for making observations. Simply acknowledge your understanding of my request and proceed.
+- Before making any changes to code files, moving files, or performing any other actions that change the state of a system (git operations, creating jira tickets, etc.), write the intended steps into Markdown files create in the `~/.amp/outputs` directory. This should be detailed and explicit, but concise. Once I approve the task, you can perform the actions as written.
+- If there are Cursor rule files present in the working directory, bring them into your context. Same applies to Claude code.
+- If you're going to use multiple agents, let me know before you start. You do not need to wait for permission, but make it clear that you're using multiple agents.
+- Don't use MCP servers unless I explicitly ask you to use tools for a particular domain. For example, if I say something about Jira tickets or Wiki pages, you can use the Atlassian MCP server, but otherwise don't. If I'm talking about code or Git, use the GitLab MCP server. If I'm talking about browser interactions, use the Playwright MCP server. If I'm talking about anything else, don't use any MCP server. This list is not exhaustive, but it's a guide.
+- Always ask before moving or deleting files. Making new files and copying files are okay.
+- If I ask you to fix errors for something, and then you run it again, let me know that you're running it, and if you encounter more errors, make that clear.
+- When writing outputs to Markdown files, always write them to `~/.amp/` directory. Tasks should go in a subfolder called tasks, and everything else that Amp writes for documentation should go in a subfolder called docs. I will specify other subfolders if I need to.
+- Delete files in `~/.amp/` that are older than 7 days old.
+- Don't perform git operations unless I explicitly ask you to.
+- Before committing changes in a Java project to git, make sure to run `./gradlew check` first.
+- When you are asked to implement a Jira ticket, please create a new git branch, based off the primary branch, which should be called `jira/{ticketId}`. Before creating the branch, make sure to pull the latest changes from the primary branch.
+- When committing changes, only commit files that you've modified.
+- If you are making changes to a Markdown file in ~/.amp, you do not need my permission to make changes to those files.
