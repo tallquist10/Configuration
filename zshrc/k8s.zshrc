@@ -1,0 +1,10 @@
+alias k=kubectl
+alias ka='kubectl apply -f'
+alias kcc='kubectl config current-context'
+alias kd='kubectl describe'
+alias kg='kubectl get'
+alias kl='kubectl logs'
+alias kn='kubens'
+alias kr='kubectl delete -f'
+alias ktx='kubectx'
+alias virtctl='kubectl virt'
